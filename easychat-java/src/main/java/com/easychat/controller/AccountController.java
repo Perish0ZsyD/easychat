@@ -2,6 +2,7 @@ package com.easychat.controller;
 
 import com.easychat.entity.constants.Constants;
 import com.easychat.entity.vo.ResponseVO;
+import com.easychat.entity.vo.UserInfoVO;
 import com.easychat.exception.BusinessException;
 import com.easychat.redis.RedisUtils;
 import com.easychat.service.UserInfoService;
@@ -77,18 +78,17 @@ public class AccountController extends ABaseController {
 
     @RequestMapping("/login")
     public ResponseVO login(@NotEmpty String checkCodeKey,
-                               @NotEmpty @Email String email,
-                               @NotEmpty String password,
-                               @NotEmpty String checkCode) {
+                            @NotEmpty @Email String email,
+                            @NotEmpty String password,
+                            @NotEmpty String checkCode) {
         try {
             if (!checkCode.equalsIgnoreCase((String) redisUtils.get(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey))) {
-                throw new BusinessException("验证码错误");
+                throw new BusinessException("图片验证码不正确");
             }
-
-            userInfoService.login(email, password);
-            return getSuccessResponseVO(null);
+            UserInfoVO userInfoVO = userInfoService.login(email, password);
+            return getSuccessResponseVO(userInfoVO);
         } finally {
-            redisUtils.delete(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey); // 验证码错误直接删去
+            redisUtils.delete(Constants.REDIS_KEY_CHECK_CODE + checkCodeKey);
         }
     }
 }

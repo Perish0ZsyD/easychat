@@ -86,7 +86,7 @@ public class Constants {
 
     public static final Long MILLISECOND_3DAYS_AGO = 3 * 24 * 60 * 60 * 1000L;
 
-//    public static final String ROBOT_UID = UserContactTypeEnum.USER.getPrefix() + "robot";
+    public static final String ROBOT_UID = UserContactTypeEnum.USER.getPrefix() + "robot";
 
     //系统设置
     public static final String REDIS_KEY_SYS_SETTING = "easychat:syssetting:";

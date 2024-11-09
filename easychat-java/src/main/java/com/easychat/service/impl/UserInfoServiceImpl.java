@@ -11,6 +11,7 @@ import com.easychat.entity.enums.UserStatusEnum;
 import com.easychat.entity.po.UserInfoBeauty;
 import com.easychat.entity.query.SimplePage;
 import com.easychat.entity.query.UserInfoBeautyQuery;
+import com.easychat.entity.vo.UserInfoVO;
 import com.easychat.exception.BusinessException;
 import com.easychat.mappers.UserInfoMapper;
 import com.easychat.service.UserInfoService;
@@ -19,6 +20,7 @@ import com.easychat.entity.po.UserInfo;
 import com.easychat.entity.query.UserInfoQuery;
 import com.easychat.mappers.UserInfoBeautyMapper;
 import com.easychat.mappers.UserInfoMapper;
+import com.easychat.utils.CopyTools;
 import com.easychat.utils.StringTools;
 import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
@@ -153,8 +155,7 @@ public class UserInfoServiceImpl implements UserInfoService{
 	}
 
 	@Override
-	public Map<String, Object> login(String email, String password) {
-		Map<String, Object> result = new HashMap<>();
+	public UserInfoVO login(String email, String password) {
 		UserInfo userInfo = this.userInfoMapper.selectByEmail(email);
 		if (null == userInfo || !userInfo.getPassword().equals(password)) {
 			throw new BusinessException("账号或者密码错误");
@@ -163,18 +164,10 @@ public class UserInfoServiceImpl implements UserInfoService{
 			throw new BusinessException("账号已禁用");
 		}
 
-		if (null != userInfo) {
-			if (!userInfo.getPassword().equals(password)) { // 数据库密码进行匹配
-				result.put("success", false);
-				result.put("errorMsg", "密码错误");
-			} else {
-
-			}
-		} else {
-			result.put("success", false);
-			result.put("errorMsg", "账号不存在");
-		}
-		return result;
+		UserInfoVO userInfoVO = CopyTools.copy(userInfo, UserInfoVO.class);
+//		userInfoVO.setToken(tokenUserInfoDto.getToken());
+//		userInfoVO.setAdmin(tokenUserInfoDto.getAdmin());
+		return userInfoVO;
 	}
 
 
