@@ -1,6 +1,6 @@
 package com.easychat.exception;
 
-import com.easychat.enums.ResponseCodeEnum;;
+import com.easychat.entity.enums.ResponseCodeEnum;;
 
 /**
  * @Description: 业务异常

@@ -4,7 +4,7 @@ const regs = {
   password: /^(?=.*\d)(?=.*[a-zA-Z])[\da-zA-Z~!@#$%^&*_]{8,}$/,
   version: /^[0-9\.]+$/
 }
-// element自定义校验规则,生成代码element-plus.org
+
 const verify = (rule, value, regs, callback) => {
   if (value) {
     if (regs.test(value)) {

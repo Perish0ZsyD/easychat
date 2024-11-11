@@ -1,44 +1,35 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+/* eslint-disable no-empty */
+import { app, shell, BrowserWindow, Menu, Tray } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
-import icon from '../../resources/icon.png?asset'
+import icon from '../../resources/chat.png?asset'
+import { onloginOrRegister, onLoginSuccess, winTitleOp } from './ipc.js'
+import { on } from 'events'
+
 const NODE_ENV = process.env.NODE_ENV
 
-// 控制界面大小,不同界面大小不同,这里是登录界面和注册界面
 const login_width = 300
 const login_height = 370
-// const regster_width=300;
-const regster_height = 490
-
+const register_height = 490
 function createWindow() {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
+    title: 'EasyChat',
     icon: icon,
     width: login_width,
     height: login_height,
     show: false,
     autoHideMenuBar: true,
-    titleBarStyle: 'hidden', // 隐藏菜单栏
-    resizable: false, // 禁止调整窗口大小
-    frame: true, // 是否显示窗口边框
-    transparent: true, // 是否透明
+    titleBarStyle: 'hidden',
+    resizable: false,
+    frame: false,
+    transparent: true,
+    // ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      contextIsolation: false // 是否启用上下文隔离
+      contextIsolation: false
     }
-  })
-
-  // 消息监听
-  ipcMain.on('loginOrRegister', (e, isLogin) => {
-    console.log('收到渲染进程消息:', isLogin) // vscode控制台输出,主进程
-    mainWindow.setResizable(true)
-    if (isLogin) {
-      mainWindow.setSize(login_width, login_height)
-    } else {
-      mainWindow.setSize(login_width, regster_height)
-    }
-    mainWindow.setResizable(false)
   })
 
   //打开控制台
@@ -48,7 +39,7 @@ function createWindow() {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-    mainWindow.setTitle("EasyChat")
+    mainWindow.setTitle('EasyChat')
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -63,6 +54,81 @@ function createWindow() {
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
+  //托盘
+  const tray = new Tray(icon)
+  const contextMenu = [
+    {
+      label: '退出EasyChat',
+      click: () => {
+        app.quit()
+      }
+    }
+  ]
+  const menu = Menu.buildFromTemplate(contextMenu)
+  tray.setToolTip('EasyChat')
+  tray.setContextMenu(menu)
+  tray.on('click', () => {
+    mainWindow.setSkipTaskbar(false)
+    mainWindow.show()
+  })
+  //监听登录注册
+  onloginOrRegister((isLogin) => {
+    mainWindow.setResizable(true)
+    mainWindow.setSize(login_width, isLogin ? login_height : register_height)
+    mainWindow.setResizable(false)
+  })
+
+  onLoginSuccess((config) => {
+    mainWindow.setResizable(true)
+    mainWindow.setSize(850, 800)
+    mainWindow.center()
+    //可最大化
+    mainWindow.setMaximizable(true)
+    //设置最小的窗口大小
+    mainWindow.setMinimumSize(800, 600)
+
+    //TODO管理后台的窗口操作
+    if (config.admin) {
+    }
+
+    contextMenu.unshift({
+      label: '用户：' + config.nickName,
+      click: () => {}
+    })
+    tray.setContextMenu(Menu.buildFromTemplate(contextMenu))
+  })
+
+  winTitleOp((e, { action, data }) => {
+    const webContendts = e.sender //获取当前窗口的webContents
+    const win = BrowserWindow.fromWebContents(webContendts) //获取当前窗口
+    switch (action) {
+      case 'close': {
+        if (data.closeType == 0) {
+          win.close() //关闭窗口
+        } else if (data.closeType == 1) {
+          win.setSkipTaskbar(true) //隐藏任务栏
+          win.hide() //隐藏窗口
+        }
+        break
+      }
+      case 'minimize': {
+        win.minimize()
+        break
+      }
+      case 'maximize': {
+        win.maximize()
+        break
+      }
+      case 'unmaximize': {
+        win.unmaximize()
+        break
+      }
+      case 'top': {
+        win.setAlwaysOnTop(data.top)
+        break
+      }
+    }
+  })
 }
 
 // This method will be called when Electron has finished

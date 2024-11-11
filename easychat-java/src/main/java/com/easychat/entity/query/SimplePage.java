@@ -1,6 +1,6 @@
 package com.easychat.entity.query;
 
-import com.easychat.enums.PageSize;;
+import com.easychat.entity.enums.PageSize;;
 
 /**
  * @Description: 基础分页类

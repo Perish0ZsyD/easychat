@@ -2,7 +2,7 @@ package com.easychat.entity.po;
 
 import java.io.Serializable;
 
-import com.easychat.enums.DateTimePatternEnum;
+import com.easychat.entity.enums.DateTimePatternEnum;
 import com.easychat.utils.DateUtils;
 import java.util.Date;
 import com.fasterxml.jackson.annotation.JsonFormat;

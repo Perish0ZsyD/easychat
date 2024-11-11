@@ -15,6 +15,19 @@ export default defineConfig({
         '@': resolve('src/renderer/src')
       }
     },
-    plugins: [vue()]
+    plugins: [vue()],
+    server: {
+      port: 5000,
+      hmr: true,
+      proxy: {
+        '/api': {
+          target: 'http://localhost:5050',
+          changeOrigin: true, // 开发环境解决跨域问题
+          pathRewrite: {
+            '^api': '/api'
+          }
+        }
+      }
+    }
   }
 })
