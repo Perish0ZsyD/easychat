@@ -9,7 +9,9 @@
             :class="['tab-item iconfont', item.icon, item.path == currentMenu.path ? 'active' : '']"
             @click="changeMenu(item)"
           >
-            <template v-if="item.name == 'chat'"> </template>
+            <template v-if="item.name == 'chat'">
+              <!-- 引入组件，点气泡后界面加载聊天信息 -->
+            </template>
           </div>
         </template>
       </div>
@@ -24,7 +26,8 @@
       </div>
     </div>
     <div class="right-container">
-      <router-view v-slot="{ Component }">
+      <router-view v-slot="{ Component }"> 
+        <!-- 通过slot获取Component 认为他是一个组件 -->
         <keep-alive include="'chat'">
           <component :is="Component" ref="componentRef" />
         </keep-alive>
@@ -33,6 +36,7 @@
   </div>
   <WinOp :close-type="0"></WinOp>
 </template>
+
 <script setup>
 import { ref, reactive, getCurrentInstance, nextTick, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
@@ -40,6 +44,7 @@ import { useUserInfoStore } from '@/stores/UserInfoStore'
 const userInfoStore = useUserInfoStore()
 const router = useRouter()
 const { proxy } = getCurrentInstance()
+
 const menuList = ref([
   {
     name: 'chat',
@@ -66,6 +71,7 @@ const currentMenu = ref(menuList.value[0])
 const changeMenu = (item) => {
   currentMenu.value = item
   router.push(item.path)
+  // 通过路由跳转,每一个item都有一个路由，定义在router/index.js中
 }
 const getLoginInfo = async () => {
   let result = await proxy.Request({

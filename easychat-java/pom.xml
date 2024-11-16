@@ -37,7 +37,7 @@
         <commons.codec.version>1.9</commons.codec.version>
         <commons.io.version>2.5</commons.io.version>
         <captcha.verion>1.6.2</captcha.verion>
-        <netty.version>4.1.50.Final</netty.version>
+        <netty.version>4.1.68.Final</netty.version>
         <redisson.version>3.12.3</redisson.version>
     </properties>
 

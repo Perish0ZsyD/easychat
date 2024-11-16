@@ -3,7 +3,7 @@ package com.easychat.service.impl;
 
 import java.util.List;
 import com.easychat.entity.query.SimplePage;
-import com.easychat.enums.PageSize;
+import com.easychat.entity.enums.PageSize;
 import com.easychat.mappers.UserContactMapper;
 import com.easychat.service.UserContactService;
 import com.easychat.entity.vo.PaginationResultVO;

@@ -71,13 +71,14 @@ function createWindow() {
     mainWindow.setSkipTaskbar(false)
     mainWindow.show()
   })
-  //监听登录注册
+  // 监听登录注册
   onloginOrRegister((isLogin) => {
     mainWindow.setResizable(true)
     mainWindow.setSize(login_width, isLogin ? login_height : register_height)
     mainWindow.setResizable(false)
   })
 
+  // 监听成功，进入聊天界面
   onLoginSuccess((config) => {
     mainWindow.setResizable(true)
     mainWindow.setSize(850, 800)
@@ -87,7 +88,7 @@ function createWindow() {
     //设置最小的窗口大小
     mainWindow.setMinimumSize(800, 600)
 
-    //TODO管理后台的窗口操作
+    //TODO如果是管理员，管理后台的窗口操作、托盘操作
     if (config.admin) {
     }
 
@@ -98,6 +99,8 @@ function createWindow() {
     tray.setContextMenu(Menu.buildFromTemplate(contextMenu))
   })
 
+
+  // ipc.js定义的窗口操作
   winTitleOp((e, { action, data }) => {
     const webContendts = e.sender //获取当前窗口的webContents
     const win = BrowserWindow.fromWebContents(webContendts) //获取当前窗口

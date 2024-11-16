@@ -21,6 +21,7 @@ const onLoginSuccess = (callback) => {
   })
 }
 
+// WinOp.vue
 const winTitleOp = (callback) => {
   ipcMain.on('winTitleOp', (e, data) => {
     callback(e, data)

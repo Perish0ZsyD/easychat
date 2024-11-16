@@ -38,3 +38,4 @@ export default {
   getUserData,
   deleteUser
 }
+// 主进程拿到用户信息后，存储到本地，以便下次启动时直接读取
